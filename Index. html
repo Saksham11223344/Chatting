@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat with Friends</title>
+</head>
+<body>
+  <h1>Chat App</h1>
+  <input type="text" id="inviteCode" placeholder="Enter Invite Code">
+  <button onclick="connectToChat()">Connect</button>
+  <div id="chat">
+    <ul id="messages"></ul>
+  </div>
+  <input type="text" id="message" placeholder="Type a message">
+  <button onclick="sendMessage()">Send</button>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+  <script>
+    // Firebase configuration (Step 1 mein jo code copy kiya tha, woh yahan paste karo)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Invite code check karne ka function
+    function connectToChat() {
+      const inviteCode = document.getElementById('inviteCode').value;
+      if (inviteCode === 'YOUR_SECRET_INVITE_CODE') { // Yeh code apne hisab se set karo
+        alert('Connected!');
+        loadChat();
+      } else {
+        alert('Invalid Invite Code');
+      }
+    }
+
+    // Chat messages load karne ka function
+    function loadChat() {
+      database.ref('messages').on('child_added', (snapshot) => {
+        const message = snapshot.val();
+        const li = document.createElement('li');
+        li.textContent = message;
+        document.getElementById('messages').appendChild(li);
+      });
+    }
+
+    // Message send karne ka function
+    function sendMessage() {
+      const message = document.getElementById('message').value;
+      database.ref('messages').push(message);
+      document.getElementById('message').value = '';
+    }
+  </script>
+</body>
+</html>
